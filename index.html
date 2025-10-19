@@ -1,79 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>SingaporeAirlines</title>
-<meta charset="utf-8">
-<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
-<style> @-ms-viewport { width: device-width; } </style>
-<link rel="stylesheet" href="reset.min.css">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singapore Airlines Virtual Tour</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #panorama {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .scene-selector {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .scene-btn {
+            padding: 12px 24px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .scene-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .scene-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .title {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @media (max-width: 768px) {
+            .scene-selector {
+                top: 10px;
+                padding: 10px 15px;
+                gap: 8px;
+            }
+            
+            .scene-btn {
+                padding: 10px 18px;
+                font-size: 12px;
+            }
+            
+            .title {
+                font-size: 18px;
+                bottom: 20px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
 </head>
-<body class="multiple-scenes ">
-
-<div id="pano"></div>
-
-<div id="sceneList">
-  <ul class="scenes">
+<body>
+    <div class="scene-selector">
+        <button class="scene-btn active" onclick="loadScene('business')">Business Class</button>
+        <button class="scene-btn" onclick="loadScene('premium')">Premium Economy</button>
+        <button class="scene-btn" onclick="loadScene('economy')">Economy Class</button>
+    </div>
     
-      <a href="javascript:void(0)" class="scene" data-id="0-business">
-        <li class="text">Business</li>
-      </a>
+    <div id="title" class="title">Business Class</div>
     
-      <a href="javascript:void(0)" class="scene" data-id="1-premium">
-        <li class="text">Premium</li>
-      </a>
+    <div id="panorama"></div>
     
-      <a href="javascript:void(0)" class="scene" data-id="2-economy">
-        <li class="text">Economy</li>
-      </a>
-    
-  </ul>
-</div>
-
-<div id="titleBar">
-  <h1 class="sceneName"></h1>
-</div>
-
-<a href="javascript:void(0)" id="autorotateToggle">
-  <img class="icon off" src="play.png">
-  <img class="icon on" src="pause.png">
-</a>
-
-<a href="javascript:void(0)" id="fullscreenToggle">
-  <img class="icon off" src="fullscreen.png">
-  <img class="icon on" src="windowed.png">
-</a>
-
-<a href="javascript:void(0)" id="sceneListToggle">
-  <img class="icon off" src="expand.png">
-  <img class="icon on" src="collapse.png">
-</a>
-
-<a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
-  <img class="icon" src="up.png">
-</a>
-<a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2">
-  <img class="icon" src="down.png">
-</a>
-<a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3">
-  <img class="icon" src="left.png">
-</a>
-<a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4">
-  <img class="icon" src="right.png">
-</a>
-<a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5">
-  <img class="icon" src="plus.png">
-</a>
-<a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6">
-  <img class="icon" src="minus.png">
-</a>
-
-<script src="screenfull.min.js" ></script>
-<script src="bowser.min.js" ></script>
-<script src="marzipano.js" ></script>
-
-<script src="data.js"></script>
-<script src="index.js"></script>
-
+    <script>
+        const scenes = {
+            business: {
+                title: 'Business Class',
+                image: 'Business_360.jpg'
+            },
+            premium: {
+                title: 'Premium Economy',
+                image: 'Premium_360.jpg'
+            },
+            economy: {
+                title: 'Economy Class',
+                image: 'Economy_360.jpg'
+            }
+        };
+        
+        let viewer = pannellum.viewer('panorama', {
+            type: 'equirectangular',
+            panorama: scenes.business.image,
+            autoLoad: true,
+            autoRotate: -2,
+            autoRotateInactivityDelay: 3000,
+            showControls: true,
+            showFullscreenCtrl: true,
+            showZoomCtrl: true,
+            mouseZoom: true,
+            hfov: 100,
+            pitch: 0,
+            yaw: 0
+        });
+        
+        function loadScene(sceneId) {
+            const scene = scenes[sceneId];
+            
+            // Update buttons
+            document.querySelectorAll('.scene-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update title
+            document.getElementById('title').textContent = scene.title;
+            
+            // Load new panorama
+            viewer.loadScene(scene.image, 0, 0, 100);
+        }
+    </script>
 </body>
 </html>
